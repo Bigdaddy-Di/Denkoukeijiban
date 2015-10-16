@@ -2,6 +2,7 @@ package net.tokyo_ct.meister2015.jellyfish.bouyomichan;
 
 import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class Bouyomichan {
@@ -20,7 +21,7 @@ public class Bouyomichan {
 	public void clear() {
 		this.command(64);
 	}
-	
+
 	public void skip(){
 		this.command(48);
 	}
@@ -42,6 +43,8 @@ public class Bouyomichan {
 
 			dos = new DataOutputStream(socket.getOutputStream());
 			dos.write(data);
+		}catch(ConnectException e){
+			System.out.println("Unsuccessful Connection");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
