@@ -22,7 +22,7 @@ public class Bouyomichan {
 		this.command(64);
 	}
 
-	public void skip(){
+	public void skip() {
 		this.command(48);
 	}
 
@@ -39,17 +39,18 @@ public class Bouyomichan {
 
 		try {
 			socket = new Socket(this.host, this.port);
-			System.out.println(this.host+" "+this.port+" Connection Successful");
+			System.out.println(this.host + " " + this.port + " Connection Successful");
 
 			dos = new DataOutputStream(socket.getOutputStream());
 			dos.write(data);
-		}catch(ConnectException e){
+		} catch (ConnectException e) {
 			System.out.println("Unsuccessful Connection");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				if (dos != null) {
+
 					dos.close();
 				}
 				if (socket != null) {
@@ -71,8 +72,7 @@ public class Bouyomichan {
 		}
 	}
 
-	public void talk(short vlm, short spd, short tne, short vic, String msg)
-			throws UnsupportedEncodingException {
+	public void talk(short vlm, short spd, short tne, short vic, String msg) throws UnsupportedEncodingException {
 		byte msgData[] = msg.getBytes("UTF-8");
 		byte data[] = new byte[15 + msgData.length];
 
