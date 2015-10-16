@@ -13,17 +13,21 @@ import javax.imageio.ImageIO;
 
 public class Font16 {
 
-	public char c;
+	public String str;
+	public static final int width = 16 * 15;
+	public static final int height = 16;
+	public  int ys=140;
 
-	public void toImage() {
+	public boolean[][] toImage() {
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = img.createGraphics();
-		Font font = new Font("Arial", Font.PLAIN, 48);
+		Font font = new Font("MS Gothic", Font.PLAIN, 16);
 		g2d.setFont(font);
 		FontMetrics fm = g2d.getFontMetrics();
-		int width = 160;
-		int height = 160;
+
 		g2d.dispose();
+
+		boolean[][] data = new boolean[width][height];
 
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		g2d = img.createGraphics();
@@ -38,13 +42,21 @@ public class Font16 {
 		g2d.setFont(font);
 		fm = g2d.getFontMetrics();
 		g2d.setColor(Color.BLACK);
-		g2d.drawString(((Character) c).toString(), 0, fm.getAscent());
+		g2d.drawString(str, 0, fm.getAscent());
 		g2d.dispose();
 		try {
 			ImageIO.write(img, "png", new File("Text.png"));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				int c =img.getRGB(x, y)>>>24;
+				data[x][y] = c >ys;
+			}
+		}
+		return data;
 
 	}
 
