@@ -4,6 +4,13 @@
 	<groupId>DenkoKeijiban</groupId>
 	<artifactId>DenkoKeijiban</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<repositories>
+		<repository>
+			<id>oauth</id>
+			<name>OAuth Repository</name>
+			<url>http://oauth.googlecode.com/svn/code/maven</url>
+		</repository>
+	</repositories>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 
@@ -22,7 +29,7 @@
 		<dependency>
 			<groupId>org.twitter4j</groupId>
 			<artifactId>twitter4j-core</artifactId>
-  	</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.twitter4j</groupId>
 			<artifactId>twitter4j-stream</artifactId>
@@ -32,6 +39,11 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-oauth2</artifactId>
+		</dependency>
+
 
 	</dependencies>
 	<dependencyManagement>
@@ -50,6 +62,11 @@
 				<groupId>javax.mail</groupId>
 				<artifactId>mail</artifactId>
 				<version>1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.apis</groupId>
+				<artifactId>google-api-services-oauth2</artifactId>
+				<version>v1-rev97-1.20.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
