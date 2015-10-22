@@ -19,6 +19,7 @@ public class Clock {
 		m = Calendar.getInstance().get(Calendar.MINUTE);
 		s = Calendar.getInstance().get(Calendar.SECOND);
 
+
 		time = (h + ":" + m + ":" + s);
 		if (s < 10 && m < 10 && h < 10) {
 			time = ("0" + h + ":0" + m + ":0" + s);
