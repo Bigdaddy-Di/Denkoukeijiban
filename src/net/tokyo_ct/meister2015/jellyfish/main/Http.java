@@ -19,7 +19,7 @@ public class Http {
 
 	public Http(String url) {
 		this.url = url;
-		rc = RequestConfig.custom().setConnectTimeout(3).setSocketTimeout(3).build();
+		rc = RequestConfig.custom().setConnectTimeout(3000).setSocketTimeout(3000).build();
 
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader("Accept-Charset", "UTF-8"));
