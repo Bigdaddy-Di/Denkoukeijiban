@@ -17,7 +17,7 @@ public class Font16Test {
 		System.out.println(f.ys);
 	}
 
-	private void print(Font16 f) {
+	public static void print(Font16 f) {
 		for (int y = 0; y < f.height; y++) {
 			for (int x = 0; x < f.width; x++) {
 				System.out.print(f.data[x][y] ? "■" : "□");
