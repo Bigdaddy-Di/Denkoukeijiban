@@ -15,30 +15,29 @@ import com.jayway.jsonpath.JsonPath;
 import net.tokyo_ct.meister2015.jellyfish.main.Http;
 
 public class Weather {
+	protected SAXReader sr = new SAXReader();
+	protected Document doc;
+	String tdWtr, maxTemp, minTemp, tmWtr = "";
 
-	public void getWeather(String id) {
-		Http http = new Http("http://weather.livedoor.com/forecast/webservice/json/v1?city=" + id);
+	public void getData(String id) {
+		Http http = new Http(
+				"http://weather.livedoor.com/forecast/webservice/json/v1?city="
+						+ id);
 		String s = http.getToUrl();
-		String tdWtr = JsonPath.read(s, "$.forecasts[0].telop");
-		String maxTemp = JsonPath.read(s, "$.forecasts[1].temperature.max.celsius");
-		String minTemp = JsonPath.read(s, "$.forecasts[1].temperature.min.celsius");
-		String tmWtr = JsonPath.read(s, "$.forecasts[1].telop");
-
-		System.out.println("今日の天気:" + tdWtr);
-		System.out.println("明日の天気:" + tmWtr);
-		System.out.println("明日の最高気温:" + maxTemp + "°C");
-		System.out.println("明日の最低気温:" + minTemp + "°C");
-
+		tdWtr = JsonPath.read(s, "$.forecasts[0].telop");
+		maxTemp = JsonPath.read(s, "$.forecasts[1].temperature.max.celsius");
+		minTemp = JsonPath.read(s, "$.forecasts[1].temperature.min.celsius");
+		tmWtr = JsonPath.read(s, "$.forecasts[1].telop");
 	}
 
 	public String getId(String city) {
 
-		SAXReader sr = new SAXReader();
-		Document doc;
 		String id = null;
 		try {
-			doc = sr.read(new URL("http://weather.livedoor.com/forecast/rss/primary_area.xml"));
-			List nodes = doc.selectNodes("/rss/channel/ldWeather:source/pref/city");
+			doc = sr.read(new URL(
+					"http://weather.livedoor.com/forecast/rss/primary_area.xml"));
+			List nodes = doc
+					.selectNodes("/rss/channel/ldWeather:source/pref/city");
 			for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
 				Node cityNode = (Node) i.next();
 				if (city.equals(cityNode.selectSingleNode("@title").getText())) {

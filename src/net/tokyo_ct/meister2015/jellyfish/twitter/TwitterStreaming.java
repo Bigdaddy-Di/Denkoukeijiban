@@ -17,7 +17,7 @@ public class TwitterStreaming {
 	String accessToken = "3900807690-pHvP8OO7aBZAf9ReO8SkOfS96yM4fzAVE9THqs6";
 	String accessTokenSecret = "JO4e9DkH0wbgkrbJsVWYAlV84aONY3kHmEMzKWt3l5PkI";
 
-		ConfigurationBuilder cb;
+	ConfigurationBuilder cb;
 
 	public TwitterStreaming(String token, String tokenSec) {
 		if (token != null || tokenSec != null) {
@@ -34,18 +34,18 @@ public class TwitterStreaming {
 				.setOAuthAccessTokenSecret(accessTokenSecret);
 		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
 	};
-	
-	public void start(){
+
+	public void start() {
 		twitterStream.addListener(new UserStreamAdapter() {
 			@Override
 			public void onStatus(Status status) {
-				long id = status.getId(); 
+				long id = status.getId();
 				String text = status.getText();
 				long userId = status.getUser().getId();
 				String username = status.getUser().getScreenName();
 				Date whenTweeted = status.getCreatedAt();
 
-				Main.getBouyomichan().talk(username+"さんからのツイート:" + text);
+				Main.getBouyomichan().talk(username + "さんからのツイート:" + text);
 			}
 
 		});
@@ -66,7 +66,7 @@ public class TwitterStreaming {
 			twitterStream.shutdown();
 		}
 	}
-	
+
 	public void setQuery(long[] list) {
 		System.out.println("Query Setting...");
 		query = new FilterQuery(list);
