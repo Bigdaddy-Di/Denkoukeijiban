@@ -10,7 +10,7 @@ public class WeatherGetTest {
 	public void test() {
 		Weather w = new Weather();
 		String id = w.getId("新潟");
-		w.getData(id);
+		w.getData();
 		
 
 	}

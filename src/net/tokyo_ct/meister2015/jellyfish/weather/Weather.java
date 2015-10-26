@@ -17,9 +17,9 @@ import net.tokyo_ct.meister2015.jellyfish.main.Http;
 public class Weather {
 	protected SAXReader sr = new SAXReader();
 	protected Document doc;
-	String tdWtr, maxTemp, minTemp, tmWtr = "";
+	String id,tdWtr, maxTemp, minTemp, tmWtr = "";
 
-	public void getData(String id) {
+	public void getData() {
 		Http http = new Http(
 				"http://weather.livedoor.com/forecast/webservice/json/v1?city="
 						+ id);
@@ -32,7 +32,6 @@ public class Weather {
 
 	public String getId(String city) {
 
-		String id = null;
 		try {
 			doc = sr.read(new URL(
 					"http://weather.livedoor.com/forecast/rss/primary_area.xml"));
