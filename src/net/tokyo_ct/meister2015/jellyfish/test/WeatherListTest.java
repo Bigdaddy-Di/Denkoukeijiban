@@ -8,7 +8,7 @@ public class WeatherListTest {
 
 	@Test
 	public void test() {
-		Weather w=new Weather();
+		Weather w = new Weather();
 		w.getId("新潟");
 
 	}
