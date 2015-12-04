@@ -6,10 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 public class SQLiteManager {
 	String connUrl;
 	Connection con;
 	Statement stmt;
+
+	public SQLiteManager() {
+		this("jdbc:sqlite:C:/Users/TeamET/setting.sqlite3");
+	}
 
 	public SQLiteManager(String connUrl) {
 		super();
@@ -58,6 +64,41 @@ public class SQLiteManager {
 			e.printStackTrace();
 		}
 		return permission;
+	}
+
+	public String accessToken(String at, String ats) {
+		String sql = "SELECT * FROM accessTokens WHERE (accessToken = '" + at
+				+ "') AND (accessTokenSecret = '" + ats + "');";
+		String id = "";
+		try {
+			ResultSet rs = stmt.executeQuery(sql);
+			if (rs.next()) {
+				id = rs.getString("id");
+			}
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		return id;
+	}
+
+	public String[] login(String id, String hashedPass) {
+		String sql = "SELECT * FROM users WHERE (id = '" + id
+				+ "') AND (hashedPass = '" + hashedPass + "');";
+		String[] accessToken = new String[2];
+		try {
+			ResultSet rs = stmt.executeQuery(sql);
+			if (rs.next()) {
+				accessToken[0] = RandomStringUtils.randomAlphabetic(10);
+				accessToken[1] = RandomStringUtils.randomAlphabetic(15);
+				stmt.execute("INSERT INTO accessTokens VALUES('" + id + "','"
+						+ accessToken[0] + "','" + accessToken[1] + "');");
+			}
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		return accessToken;
 	}
 
 }
