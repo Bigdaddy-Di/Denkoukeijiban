@@ -79,8 +79,12 @@ public class HttpTop implements HttpHandler {
 		} else if (path.equals("/login")) {
 			Map<String, String> params = queryToMap(he.getRequestURI()
 					.getQuery());
+			System.out.println(he.getRequestURI()
+					.getQuery());
 			String[] accessToken = man.login(params.get("id"),
 					params.get("password"));
+
+			System.out.println(params.get("id") + "," + params.get("password"));
 
 			he.getResponseHeaders().add("Set-Cookie",
 					"ACCESS_TOKEN=" + accessToken[0] + "; path=/;");
