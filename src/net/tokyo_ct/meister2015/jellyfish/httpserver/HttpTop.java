@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.tokyo_ct.meister2015.jellyfish.sqlite.SQLiteManager;
+import net.tokyo_ct.meister2015.jellyfish.weather.Weather;
 
 import org.apache.commons.io.IOUtils;
 
@@ -32,23 +33,23 @@ public class HttpTop implements HttpHandler {
 			path = "/index.html";
 		}
 		if (path.endsWith("html")) {
-			List<String> cookies = he.getRequestHeaders().get("Cookie");
-			for (String cookie : cookies) {
-				String[] parts = cookie.split("(=|;| )+");
-				for (int i = 0; i < parts.length; i++) {
-					if (parts[i].equals("ACCESS_TOKEN")) {
-						accessTokenName = parts[i + 1];
-					}
-					if (parts[i].equals("ACCESS_TOKEN_SECRET")) {
-						accessTokenSecret = parts[i + 1];
-					}
-				}
-			}
-
-			System.out.println(accessTokenName);
-			System.out.println(accessTokenSecret);
-
-			id = man.accessToken(accessTokenName, accessTokenSecret);
+//			List<String> cookies = he.getRequestHeaders().get("Cookie");
+//			for (String cookie : cookies) {
+//				String[] parts = cookie.split("(=|;| )+");
+//				for (int i = 0; i < parts.length; i++) {
+//					if (parts[i].equals("ACCESS_TOKEN")) {
+//						accessTokenName = parts[i + 1];
+//					}
+//					if (parts[i].equals("ACCESS_TOKEN_SECRET")) {
+//						accessTokenSecret = parts[i + 1];
+//					}
+//				}
+//			}
+//
+//			System.out.println(accessTokenName);
+//			System.out.println(accessTokenSecret);
+//
+//			id = man.accessToken(accessTokenName, accessTokenSecret);
 
 			File top = new File("serverfiles/top");
 			File file = new File("serverfiles/html" + path);
@@ -79,8 +80,7 @@ public class HttpTop implements HttpHandler {
 		} else if (path.equals("/login")) {
 			Map<String, String> params = queryToMap(he.getRequestURI()
 					.getQuery());
-			System.out.println(he.getRequestURI()
-					.getQuery());
+			System.out.println(he.getRequestURI().getQuery());
 			String[] accessToken = man.login(params.get("id"),
 					params.get("password"));
 
@@ -120,6 +120,28 @@ public class HttpTop implements HttpHandler {
 
 	public String replace(String str) {
 		str = str.replace("[[ID]]", id.equals("") ? "ゲスト" : id);
+		str = str.replace("[[LOCATION_LIB]]", locations());
 		return str;
+	}
+
+	public String locations() {
+		StringBuilder sb = new StringBuilder();
+		Weather w = new Weather();
+		sb.append("[");
+		for (String[] strs : w.getList()) {
+			sb.append("[");
+			for (String str : strs) {
+				sb.append("\"");
+				sb.append(str);
+				sb.append("\",");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append("],");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("]");
+
+		return sb.toString();
+
 	}
 }

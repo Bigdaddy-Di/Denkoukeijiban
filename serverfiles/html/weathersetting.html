@@ -1,0 +1,16 @@
+
+<div class="container">
+	<form>
+		<select id="weatherprefselect">
+		</select>
+
+		<select id="weathercityselect">
+		</select>
+	</form>
+</div> <!-- /container -->
+<script type="text/javascript">
+	var locations=[[LOCATION_LIB]];
+	$.each(locations,function(i,obj){
+		$("#weatherprefselect").append('<option value="'+obj[0]+'">'+obj[0]);
+	});
+</script>
