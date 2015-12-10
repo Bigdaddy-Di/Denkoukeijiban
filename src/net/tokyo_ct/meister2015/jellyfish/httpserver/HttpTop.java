@@ -15,6 +15,7 @@ import net.tokyo_ct.meister2015.jellyfish.weather.Weather;
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.primitives.Bytes;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -28,28 +29,38 @@ public class HttpTop implements HttpHandler {
 		SQLiteManager man = new SQLiteManager();
 		String accessTokenName = "";
 		String accessTokenSecret = "";
+		Headers headers = he.getRequestHeaders();
 
 		if (path.matches("/")) {
 			path = "/index.html";
 		}
 		if (path.endsWith("html")) {
-//			List<String> cookies = he.getRequestHeaders().get("Cookie");
-//			for (String cookie : cookies) {
-//				String[] parts = cookie.split("(=|;| )+");
-//				for (int i = 0; i < parts.length; i++) {
-//					if (parts[i].equals("ACCESS_TOKEN")) {
-//						accessTokenName = parts[i + 1];
-//					}
-//					if (parts[i].equals("ACCESS_TOKEN_SECRET")) {
-//						accessTokenSecret = parts[i + 1];
-//					}
-//				}
-//			}
-//
-//			System.out.println(accessTokenName);
-//			System.out.println(accessTokenSecret);
-//
-//			id = man.accessToken(accessTokenName, accessTokenSecret);
+
+			List<String> cookies = headers.get("Cookie");
+
+			if (cookies != null) {
+				for (String cookie : cookies) {
+					String[] parts = cookie.split("(=|;| )+");
+					for (int i = 0; i < parts.length; i++) {
+						System.out.println(parts[i] + ":");
+						if (parts[i].equals("ACCESS_TOKEN")) {
+							accessTokenName = parts[i + 1];
+						}
+						if (parts[i].equals("ACCESS_TOKEN_SECRET")) {
+							accessTokenSecret = parts[i + 1];
+						}
+					}
+				}
+			}
+
+			System.out.println("ATN:" + accessTokenName);
+			System.out.println("ATS:" + accessTokenSecret);
+
+			if (!accessTokenName.isEmpty()) {
+				id = man.accessToken(accessTokenName, accessTokenSecret);
+			} else {
+				id = "ゲスト";
+			}
 
 			File top = new File("serverfiles/top");
 			File file = new File("serverfiles/html" + path);
@@ -92,6 +103,15 @@ public class HttpTop implements HttpHandler {
 					"ACCESS_TOKEN_SECRET=" + accessToken[1] + "; path=/;");
 			he.getResponseHeaders().add("Location", "/");
 			he.sendResponseHeaders(302, -1);
+		} else if (path.equals("/weather")) {
+			Map<String, String> params = queryToMap(he.getRequestURI()
+					.getQuery());
+			System.out.println(he.getRequestURI().getQuery());
+			man.setWeatherSetting(Integer.parseInt(params.get("pref")),
+					 Integer.parseInt(params.get("city")));
+
+			he.getResponseHeaders().add("Location", "/");
+			he.sendResponseHeaders(302, -1);
 		} else {
 			FileInputStream fileFis = new FileInputStream(new File(
 					"serverfiles/" + path));
@@ -121,6 +141,7 @@ public class HttpTop implements HttpHandler {
 	public String replace(String str) {
 		str = str.replace("[[ID]]", id.equals("") ? "ゲスト" : id);
 		str = str.replace("[[LOCATION_LIB]]", locations());
+		System.out.println(str);
 		return str;
 	}
 

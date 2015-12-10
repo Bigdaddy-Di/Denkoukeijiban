@@ -1,16 +1,36 @@
 
 <div class="container">
-	<form>
-		<select id="weatherprefselect">
-		</select>
-
-		<select id="weathercityselect">
-		</select>
+	<h1>天気設定</h1>
+	<form　action="weather" method="get">
+		<div class="form-group">
+			<label for="weatherprefselect">都道府県</label>
+			<select id="weatherprefselect" name="pref" onchange="prefselect();" class="form-control">
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="weathercityselect">都市</label>
+			<select id="weathercityselect" name="city" class="form-control">
+			</select>
+		</div>
+		<button type="submit" class="btn">送信</button>
 	</form>
 </div> <!-- /container -->
 <script type="text/javascript">
-	var locations=[[LOCATION_LIB]];
-	$.each(locations,function(i,obj){
-		$("#weatherprefselect").append('<option value="'+obj[0]+'">'+obj[0]);
+
+var locations=[[LOCATION_LIB]];
+$.each(locations,function(i,obj){
+	$("#weatherprefselect").append('<option value="'+i+'">'+obj[0].split(":")[1]);
+});
+
+var prefselect = function(){
+	var val=$("#weatherprefselect").val();
+	var cities=locations[val];
+	cities.shift();
+	$("#weathercityselect").empty();
+	$.each(cities,function(i,obj){
+		$("#weathercityselect").append('<option value="'+i+'">'+obj);
 	});
+};
+
+prefselect();
 </script>

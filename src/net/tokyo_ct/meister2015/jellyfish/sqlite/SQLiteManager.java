@@ -24,6 +24,26 @@ public class SQLiteManager {
 			Class.forName("org.sqlite.JDBC");
 			con = DriverManager.getConnection(connUrl);
 			stmt = con.createStatement();
+
+			if (stmt.executeQuery(
+					"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='users';")
+					.getInt("count(*)") == 0) {
+				String sql = "CREATE TABLE users(id TEXT,hashedpass TEXT, permission TEXT);";
+				stmt.execute(sql);
+			}
+			if (stmt.executeQuery(
+					"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='accessTokens';")
+					.getInt("count(*)") == 0) {
+				String sql = "CREATE TABLE accessTokens(id TEXT, accessToken TEXT, accessTokenSecret TEXT);";
+				stmt.execute(sql);
+			}
+			if (stmt.executeQuery(
+					"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='weather';")
+					.getInt("count(*)") == 0) {
+				String sql = "CREATE TABLE weather(pref INTEGER, city INTEGER);";
+				stmt.execute(sql);
+			}
+
 		} catch (SQLException | ClassNotFoundException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
@@ -99,6 +119,17 @@ public class SQLiteManager {
 			e.printStackTrace();
 		}
 		return accessToken;
+	}
+
+	public void setWeatherSetting(int pref, int city) {
+		String sql = "DELETE FROM weather; INSERT INTO weather VALUES(" + pref
+				+ "," + city + ");";
+		try {
+			stmt.execute(sql);
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 	}
 
 }
