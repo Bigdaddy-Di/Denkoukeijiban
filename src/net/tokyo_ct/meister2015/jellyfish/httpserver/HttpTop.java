@@ -108,7 +108,7 @@ public class HttpTop implements HttpHandler {
 					.getQuery());
 			System.out.println(he.getRequestURI().getQuery());
 			man.setWeatherSetting(Integer.parseInt(params.get("pref")),
-					 Integer.parseInt(params.get("city")));
+					Integer.parseInt(params.get("city")));
 
 			he.getResponseHeaders().add("Location", "/");
 			he.sendResponseHeaders(302, -1);
@@ -140,8 +140,9 @@ public class HttpTop implements HttpHandler {
 
 	public String replace(String str) {
 		str = str.replace("[[ID]]", id.equals("") ? "ゲスト" : id);
-		str = str.replace("[[LOCATION_LIB]]", locations());
-		System.out.println(str);
+		if (str.contains("[[LOCATION_LIB]]")) {
+			str = str.replace("[[LOCATION_LIB]]", locations());
+		}
 		return str;
 	}
 

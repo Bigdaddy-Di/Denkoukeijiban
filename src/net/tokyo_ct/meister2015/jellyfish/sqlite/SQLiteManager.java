@@ -1,5 +1,7 @@
 package net.tokyo_ct.meister2015.jellyfish.sqlite;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -28,7 +30,7 @@ public class SQLiteManager {
 			if (stmt.executeQuery(
 					"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='users';")
 					.getInt("count(*)") == 0) {
-				String sql = "CREATE TABLE users(id TEXT,hashedpass TEXT, permission TEXT);";
+				String sql = "CREATE TABLE users(id TEXT,hashedpass TEXT, permission TEXT, accessToken TEXT, accessTokenSecret TEXT);";
 				stmt.execute(sql);
 			}
 			if (stmt.executeQuery(
@@ -87,7 +89,7 @@ public class SQLiteManager {
 	}
 
 	public String accessToken(String at, String ats) {
-		String sql = "SELECT * FROM accessTokens WHERE (accessToken = '" + at
+		String sql = "SELECT * FROM users WHERE (accessToken = '" + at
 				+ "') AND (accessTokenSecret = '" + ats + "');";
 		String id = "";
 		try {
@@ -104,21 +106,27 @@ public class SQLiteManager {
 
 	public String[] login(String id, String hashedPass) {
 		String sql = "SELECT * FROM users WHERE (id = '" + id
-				+ "') AND (hashedPass = '" + hashedPass + "');";
+				+ "')  AND (hashedPass = '" + hash(hashedPass) + "');";
 		String[] accessToken = new String[2];
 		try {
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next()) {
 				accessToken[0] = RandomStringUtils.randomAlphabetic(10);
 				accessToken[1] = RandomStringUtils.randomAlphabetic(15);
-				stmt.execute("INSERT INTO accessTokens VALUES('" + id + "','"
-						+ accessToken[0] + "','" + accessToken[1] + "');");
+				this.addAccessToken(id, accessToken);
 			}
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 		return accessToken;
+	}
+
+	private void addAccessToken(String id, String[] accessToken)
+			throws SQLException {
+		stmt.execute("UPDATE users SET accessToken='" + accessToken[0]
+				+ "', accessTokenSecret='" + accessToken[1] + "' WHERE id='"
+				+ id + "';");
 	}
 
 	public void setWeatherSetting(int pref, int city) {
@@ -130,6 +138,22 @@ public class SQLiteManager {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
+	}
+
+	public static String hash(String source) {
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(source.getBytes());
+			byte[] hash = md.digest();
+			for (byte b : hash) {
+				sb.append(String.format("%02x", b));
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
 	}
 
 }
