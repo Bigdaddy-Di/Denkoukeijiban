@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import net.tokyo_ct.meister2015.jellyfish.sqlite.SQLiteManager;
+import net.tokyo_ct.meister2015.jellyfish.datamanager.SQLiteManager;
 
 import org.junit.Test;
 

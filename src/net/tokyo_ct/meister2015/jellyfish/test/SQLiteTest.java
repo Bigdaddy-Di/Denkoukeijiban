@@ -1,7 +1,7 @@
 package net.tokyo_ct.meister2015.jellyfish.test;
 
 import static org.junit.Assert.*;
-import net.tokyo_ct.meister2015.jellyfish.sqlite.SQLiteManager;
+import net.tokyo_ct.meister2015.jellyfish.datamanager.SQLiteManager;
 
 import org.junit.Test;
 

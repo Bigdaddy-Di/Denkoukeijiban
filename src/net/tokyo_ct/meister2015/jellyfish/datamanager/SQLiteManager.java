@@ -1,4 +1,4 @@
-package net.tokyo_ct.meister2015.jellyfish.sqlite;
+package net.tokyo_ct.meister2015.jellyfish.datamanager;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

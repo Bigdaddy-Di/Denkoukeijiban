@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.tokyo_ct.meister2015.jellyfish.sqlite.SQLiteManager;
+import net.tokyo_ct.meister2015.jellyfish.datamanager.SQLiteManager;
 import net.tokyo_ct.meister2015.jellyfish.weather.Weather;
 
 import org.apache.commons.io.IOUtils;
@@ -145,7 +145,7 @@ public class HttpTop implements HttpHandler {
 		}
 		return str;
 	}
-
+	
 	public String locations() {
 		StringBuilder sb = new StringBuilder();
 		Weather w = new Weather();
