@@ -5,14 +5,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.tokyo_ct.meister2015.jellyfish.datamanager.AccessTokenManager;
+import net.tokyo_ct.meister2015.jellyfish.datamanager.JsonManager;
 import net.tokyo_ct.meister2015.jellyfish.datamanager.SQLiteManager;
 import net.tokyo_ct.meister2015.jellyfish.weather.Weather;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.google.common.primitives.Bytes;
 import com.sun.net.httpserver.Headers;
@@ -21,9 +26,12 @@ import com.sun.net.httpserver.HttpHandler;
 
 public class HttpTop implements HttpHandler {
 	String id = "";
+	JsonManager jm = new JsonManager("C:/Users/TeamET/setting.json");
+	AccessTokenManager atm = new AccessTokenManager();
 
 	@Override
 	public void handle(HttpExchange he) throws IOException {
+		jm.read();
 		String path = he.getRequestURI().getPath();
 		OutputStream os = he.getResponseBody();
 		SQLiteManager man = new SQLiteManager();
@@ -55,9 +63,12 @@ public class HttpTop implements HttpHandler {
 
 			System.out.println("ATN:" + accessTokenName);
 			System.out.println("ATS:" + accessTokenSecret);
+			System.out.println(atm.getId(accessTokenName + ","
+					+ accessTokenSecret));
+			atm.print();
 
-			if (!accessTokenName.isEmpty()) {
-				id = man.accessToken(accessTokenName, accessTokenSecret);
+			if (atm.getId(accessTokenName + "," + accessTokenSecret) != null) {
+				id = atm.getId(accessTokenName + "," + accessTokenSecret);
 			} else {
 				id = "ゲスト";
 			}
@@ -92,10 +103,17 @@ public class HttpTop implements HttpHandler {
 			Map<String, String> params = queryToMap(he.getRequestURI()
 					.getQuery());
 			System.out.println(he.getRequestURI().getQuery());
-			String[] accessToken = man.login(params.get("id"),
-					params.get("password"));
+			String[] accessToken = new String[2];
+			System.out.println(jm.writeToJson());
 
-			System.out.println(params.get("id") + "," + params.get("password"));
+			if (jm.verification(params.get("id"), params.get("password"))) {
+				accessToken[0] = RandomStringUtils.randomAlphabetic(10);
+				accessToken[1] = RandomStringUtils.randomAlphabetic(15);
+				atm.putAccessToken(params.get("id"), accessToken[0] + ","
+						+ accessToken[1]);
+				System.out.println(params.get("id") + "."
+						+ params.get("password"));
+			}
 
 			he.getResponseHeaders().add("Set-Cookie",
 					"ACCESS_TOKEN=" + accessToken[0] + "; path=/;");
@@ -107,9 +125,8 @@ public class HttpTop implements HttpHandler {
 			Map<String, String> params = queryToMap(he.getRequestURI()
 					.getQuery());
 			System.out.println(he.getRequestURI().getQuery());
-			man.setWeatherSetting(Integer.parseInt(params.get("pref")),
+			jm.setLocale(Integer.parseInt(params.get("pref")),
 					Integer.parseInt(params.get("city")));
-
 			he.getResponseHeaders().add("Location", "/");
 			he.sendResponseHeaders(302, -1);
 		} else {
@@ -145,7 +162,7 @@ public class HttpTop implements HttpHandler {
 		}
 		return str;
 	}
-	
+
 	public String locations() {
 		StringBuilder sb = new StringBuilder();
 		Weather w = new Weather();
@@ -166,4 +183,21 @@ public class HttpTop implements HttpHandler {
 		return sb.toString();
 
 	}
+
+	public static String hash(String source) {
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(source.getBytes());
+			byte[] hash = md.digest();
+			for (byte b : hash) {
+				sb.append(String.format("%02x", b));
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+
 }
