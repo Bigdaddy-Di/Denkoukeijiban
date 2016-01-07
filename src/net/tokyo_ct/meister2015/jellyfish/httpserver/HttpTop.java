@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +27,19 @@ import com.sun.net.httpserver.HttpHandler;
 
 public class HttpTop implements HttpHandler {
 	String id = "";
+	
 	JsonManager jm = new JsonManager("C:/Users/TeamET/setting.json");
 	AccessTokenManager atm = new AccessTokenManager();
 
 	@Override
 	public void handle(HttpExchange he) throws IOException {
+		File f=new File("C:/Users/TeamET/setting.json");
+		if(!f.exists()){
+			f.createNewFile();
+		}
+		
 		jm.read();
+		System.out.println("aaaa");
 		String path = he.getRequestURI().getPath();
 		OutputStream os = he.getResponseBody();
 		SQLiteManager man = new SQLiteManager();
@@ -43,23 +51,16 @@ public class HttpTop implements HttpHandler {
 			path = "/index.html";
 		}
 		if (path.endsWith("html")) {
+			List<String> cookies = new ArrayList<String>();// cookies=headers.get("Cookie");
 
-			List<String> cookies = headers.get("Cookie");
-
-			if (cookies != null) {
-				for (String cookie : cookies) {
-					String[] parts = cookie.split("(=|;| )+");
-					for (int i = 0; i < parts.length; i++) {
-						System.out.println(parts[i] + ":");
-						if (parts[i].equals("ACCESS_TOKEN")) {
-							accessTokenName = parts[i + 1];
-						}
-						if (parts[i].equals("ACCESS_TOKEN_SECRET")) {
-							accessTokenSecret = parts[i + 1];
-						}
-					}
-				}
-			}
+			/*
+			 * if (cookies != null) { for (String cookie : cookies) { String[]
+			 * parts = cookie.split("(=|;| )+"); for (int i = 0; i <
+			 * parts.length; i++) { System.out.println(parts[i] + ":"); if
+			 * (parts[i].equals("ACCESS_TOKEN")) { accessTokenName = parts[i +
+			 * 1]; } if (parts[i].equals("ACCESS_TOKEN_SECRET")) {
+			 * accessTokenSecret = parts[i + 1]; } } } }
+			 */
 
 			System.out.println("ATN:" + accessTokenName);
 			System.out.println("ATS:" + accessTokenSecret);

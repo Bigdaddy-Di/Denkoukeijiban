@@ -68,6 +68,11 @@ public class JsonManager {
 	}
 
 	public void read() throws IOException {
+		System.out.println(FileUtils.readFileToString(file));
+		if (FileUtils.readFileToString(file).equals("")) {
+			System.out.println("aabb");
+			this.write();
+		}
 		jo = (new ObjectMapper()).readValue(FileUtils.readFileToString(file),
 				JsonObject.class);
 	}
