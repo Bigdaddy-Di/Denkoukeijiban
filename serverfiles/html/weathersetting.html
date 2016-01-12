@@ -1,7 +1,7 @@
 
 <div class="container">
 	<h1>天気設定</h1>
-	<form　action="/weather" method="get">
+	<form　action="/weather" method="get" id="weatherform">
 		<div class="form-group">
 			<label for="weatherprefselect">都道府県</label>
 			<select id="weatherprefselect" name="pref" onchange="prefselect();" class="form-control">
@@ -12,7 +12,7 @@
 			<select id="weathercityselect" name="city" class="form-control">
 			</select>
 		</div>
-		<button type="submit" class="btn btn-primary">送信</button>
+		<button onclick="smt();" name="edit">送信</button>
 	</form>
 </div> <!-- /container -->
 <script type="text/javascript">
@@ -33,4 +33,7 @@ var prefselect = function(){
 };
 
 prefselect();
+var smt = function(){
+	$.get("/weather", {pref: $("#weatherprefselect").val(), city: $("#weathercityselect").val(),function(){window.location="/";}})
+}
 </script>
