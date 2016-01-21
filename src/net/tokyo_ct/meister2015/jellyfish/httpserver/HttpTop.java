@@ -14,13 +14,15 @@ import java.util.Map;
 
 import net.tokyo_ct.meister2015.jellyfish.datamanager.AccessTokenManager;
 import net.tokyo_ct.meister2015.jellyfish.datamanager.JsonManager;
-import net.tokyo_ct.meister2015.jellyfish.datamanager.SQLiteManager;
 import net.tokyo_ct.meister2015.jellyfish.weather.Weather;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.RequestToken;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import com.google.common.primitives.Bytes;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -28,21 +30,20 @@ import com.sun.net.httpserver.HttpHandler;
 public class HttpTop implements HttpHandler {
 	String id = "";
 
-	JsonManager jm = new JsonManager("C:/Users/TeamET/setting.json");
+	JsonManager jm = new JsonManager("setting.json");
 	AccessTokenManager atm = new AccessTokenManager();
 
 	@Override
 	public void handle(HttpExchange he) throws IOException {
-		File f = new File("C:/Users/TeamET/setting.json");
+		File f = new File("setting.json");
 		if (!f.exists()) {
 			f.createNewFile();
 		}
-
+		
 		jm.read();
 		System.out.println("aaaa");
 		String path = he.getRequestURI().getPath();
 		OutputStream os = he.getResponseBody();
-		SQLiteManager man = new SQLiteManager();
 		String accessTokenName = "";
 		String accessTokenSecret = "";
 		Headers headers = he.getRequestHeaders();
@@ -136,6 +137,17 @@ public class HttpTop implements HttpHandler {
 					Integer.parseInt(params.get("city")));
 			he.getResponseHeaders().add("Location", "/");
 			he.sendResponseHeaders(302, -1);
+		}else if(path.equals("/twitter")){
+		    Twitter twitter = TwitterFactory.getSingleton();
+		    twitter.setOAuthConsumer("3900807690-pHvP8OO7aBZAf9ReO8SkOfS96yM4fzAVE9THqs6", "JO4e9DkH0wbgkrbJsVWYAlV84aONY3kHmEMzKWt3l5PkI");
+		    try {
+				RequestToken requestToken = twitter.getOAuthRequestToken();
+				he.getRequestHeaders().add("Location",requestToken.getAuthenticationURL());
+				he.sendResponseHeaders(302, -1);
+		    } catch (TwitterException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
 		} else {
 			FileInputStream fileFis = new FileInputStream(new File(
 					"serverfiles/" + path));

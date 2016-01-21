@@ -9,7 +9,7 @@ public class TwitterTest {
 	@Test
 	public void test() {
 		TwitterStreaming ts = new TwitterStreaming(null, null);
-		String[] list={"hello"};
+		String[] list={"木下"};
 		ts.start();
 		ts.setQuery(list);
 	}

@@ -5,9 +5,13 @@ import java.util.Date;
 import net.tokyo_ct.meister2015.jellyfish.main.Main;
 import twitter4j.FilterQuery;
 import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.UserStreamAdapter;
+import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterStreaming {
@@ -24,7 +28,8 @@ public class TwitterStreaming {
 			this.accessToken = token;
 			this.accessTokenSecret = tokenSec;
 		}
-
+	    
+	    
 		cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 				.setOAuthConsumerKey("qorHi4DftvXsO2IyjxOxE3ylC")
@@ -44,8 +49,8 @@ public class TwitterStreaming {
 				long userId = status.getUser().getId();
 				String username = status.getUser().getScreenName();
 				Date whenTweeted = status.getCreatedAt();
-
-				Main.getBouyomichan().talk(username + "さんからのツイート:" + text);
+				System.out.println(username + "さんからのツイート:" + text);
+				//Main.getBouyomichan().talk(username + "さんからのツイート:" + text);
 			}
 
 		});

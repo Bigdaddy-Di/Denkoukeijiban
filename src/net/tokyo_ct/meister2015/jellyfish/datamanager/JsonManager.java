@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -73,8 +74,11 @@ public class JsonManager {
 			System.out.println("aabb");
 			this.write();
 		}
-		jo = (new ObjectMapper()).readValue(FileUtils.readFileToString(file),
-				JsonObject.class);
+		try {
+			jo = (new ObjectMapper()).readValue(file, JsonObject.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(jo);
 	}
-
 }
