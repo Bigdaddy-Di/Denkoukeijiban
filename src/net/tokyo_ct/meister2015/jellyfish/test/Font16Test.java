@@ -17,26 +17,34 @@ public class Font16Test {
 		// System.out.println(f.ys);
 
 		Font16 f = new Font16();
-		boolean[][] bit = {
-				{ false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true },
-				{ true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false },
-		};
-		byte[] bits = f.exchange(bit);
+		int[][] biti = {
+				{ 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, },
+				{ 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, },
+				{ 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, },
+				{ 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, },
+				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+				{ 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, },
+				{ 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, },
+				{ 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, },
+				{ 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, },
+				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+				{ 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, },
+				{ 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, },
+				{ 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, },
+				{ 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, },
+				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, } };
+		boolean[][] bitb = new boolean[16][16];
+
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+				bitb[i][15-j] = biti[i][j] == 1 ? true : false;
+			}
+		}
+
+		byte[] bits = f.exchange(bitb);
 		for (byte b : bits) {
-			System.out.print(b+",");
+			System.out.print(String.format("0x%x", b) + ",");
 		}
 	}
 
