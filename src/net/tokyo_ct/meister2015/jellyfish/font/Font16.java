@@ -9,6 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
@@ -116,5 +117,29 @@ public class Font16 {
 
 		return toBooleans(w, h, d);
 
+	}
+
+	public byte[] exchange(boolean[][] bits) {
+		ArrayList<Byte> b = new ArrayList<Byte>();
+		StringBuilder s = new StringBuilder();
+		for (int y = 0; y < 16; y++) {
+			for (int x = 0; x < 15; x++) {
+				if (bits[x][y] == true) {
+					s.append('1');
+				} else {
+					s.append('0');
+				}
+			}
+			System.out.println(s.toString());
+			b.add(Byte.parseByte(s.toString().substring(0, 7), 2));
+			b.add(Byte.parseByte(s.toString().substring(8, 15), 2));
+			s.delete(0, s.length());
+		}
+
+		byte[] result = new byte[32];
+		for (int i = 0; i < 32; i++) {
+			result[i] = b.get(i);
+		}
+		return result;
 	}
 }
